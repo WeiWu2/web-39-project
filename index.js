@@ -1,16 +1,24 @@
 require('dotenv').config()
+const path = require('path')
 const express = require('express')
 
 const server = express()
 server.use(express.json())
-
+server.use(express.static(path.join(__dirname, 'client/build')))
 if(process.env.NODE_ENV === "devlopment"){
     const cors = require('cors')
     server.use(cors())
 }
+server.use('/api/hello', (req,res) => {
+    res.json({message:"hello"})
+})
+server.get('/*', (req,res) => {
+    res.send("<h1>404 request URL not found</h1>")
 
-server.use('*', (req,res) => {
-    res.send('<h2>somethingsomething</h2>')
+})
+
+server.get('*', (req,res) => {
+    res.sendFile(path.join(__dirname, 'client/build', "index.html"))
 
 })
 
